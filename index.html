@@ -1,0 +1,1039 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>USMLE Step 1 &amp; Step 2 High-Yield Review</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Source+Serif+4:opsz,wght@8..60,700&display=swap">
+<style>
+[hidden] { display: none !important; }
+img { max-width: 100%; }
+/* A plain exam screen modeled on the chart-format practice items: top bar (item box, Mark, Previous/Next),
+   item list on the left, one long scrolling vignette, bottom bar. Deliberately light-only so it looks like the
+   real testing screen whatever the viewer's OS theme. The top-right of the top bar is left empty on purpose:
+   that is where a Zoom recording drops the webcam thumbnail. Working tools live in the bottom bar. */
+:root {
+  --bg: #FFFFFF;
+  --ink: #151515;
+  --muted: #5B636D;
+  --rule: #C9CED4;
+  --soft: #F2F4F6;
+  --bar: #2F5E93;
+  --bar-deep: #234A76;
+  --bar-ink: #FFFFFF;
+  --side: #EEF0F2;
+  --side-cur: #D2DDEA;
+  --flag: #D8262F;
+  --hl: #FFF34F;
+  --hl-ink: #111111;
+  --ok: #1D7146;
+  --ok-bg: #E3F3EA;
+  --bad: #B42318;
+  --bad-bg: #FBE8E6;
+  --f-exam: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  --scale: 1;
+  --fs: calc(17px * var(--scale));
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-exam); font-size: var(--fs); line-height: 1.45; overflow: hidden; }
+button { font-family: var(--f-exam); }
+sup, sub { line-height: 0; }
+button:focus-visible, .choice:focus-visible, input:focus-visible { outline: 3px solid var(--hl); outline-offset: 2px; }
+
+.app { height: 100%; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; }
+
+/* ---------- top bar ---------- */
+.topbar {
+  background: var(--bar); color: var(--bar-ink); border-bottom: 2px solid var(--bar-deep);
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; padding: 6px 16px; min-height: 58px;
+}
+.tb-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.icon-btn { background: none; border: 0; color: var(--bar-ink); padding: 4px; cursor: pointer; display: grid; place-items: center; border-radius: 3px; }
+.icon-btn svg { width: 24px; height: 24px; }
+.icon-btn:hover { background: rgba(255,255,255,.14); }
+.itembox { border: 1px solid rgba(255,255,255,.8); padding: 3px 10px; font-size: 13px; line-height: 1.3; font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.mark { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; cursor: pointer; white-space: nowrap; user-select: none; }
+.mark input { width: 16px; height: 16px; margin: 0; cursor: pointer; }
+.mark svg { width: 18px; height: 18px; }
+.tb-center { display: flex; align-items: center; gap: 14px; }
+.navbtn { background: none; border: 0; color: var(--bar-ink); display: grid; justify-items: center; gap: 1px; font-size: 12px; cursor: pointer; padding: 2px 8px; border-radius: 3px; }
+.navbtn svg { width: 22px; height: 22px; }
+.navbtn:hover:not(:disabled) { background: rgba(255,255,255,.14); }
+.navbtn:disabled { opacity: .4; cursor: default; }
+.navcount { font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; min-width: 44px; text-align: center; }
+
+/* ---------- item list + scrolling item ---------- */
+.middle { display: grid; grid-template-columns: auto minmax(0, 1fr); min-height: 0; position: relative; }
+.status { width: 84px; background: var(--side); border-right: 1px solid var(--rule); overflow-y: auto; }
+.status ol { list-style: none; margin: 0; padding: 6px 0; }
+.status button { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 7px 12px; border: 0; background: none; color: var(--ink); font-size: 15px; cursor: pointer; font-variant-numeric: tabular-nums; }
+.status button:hover { background: #E2E6EA; }
+.status button[aria-current="true"] { background: var(--side-cur); font-weight: 700; }
+.status svg { width: 15px; height: 15px; }
+.scroller { overflow-y: auto; min-height: 0; scrollbar-gutter: stable; }
+.page { padding-inline: 16px; padding-block: 18px 48px; }
+.item { max-width: 1320px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
+.item > :not(.wide) { max-width: 920px; }
+.explain { display: grid; gap: 18px; border-top: 1px solid var(--rule); padding-top: 18px; }
+.explain h2 { margin: 0; }
+.answer-key { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.answer-key .k { display: inline-block; min-width: 1.6em; }
+.answer-key li.correct { color: var(--ok); font-weight: 700; }
+#diagrams { display: grid; gap: 56px; margin-top: 8px; }
+.dgm { margin: 0; display: grid; gap: 8px; }
+.dgm figcaption { display: grid; gap: 4px; }
+.kicker { font: 700 14px/1.2 Lato, Calibri, "Segoe UI", Arial, sans-serif; letter-spacing: .32em; text-transform: uppercase; color: #C8102E; }
+.dtitle { font: 700 clamp(24px, 2.6vw, 38px)/1.15 "Source Serif 4", Cambria, Georgia, serif; color: #1D2230; }
+.dgm-svg { display: block; width: 76%; height: auto; font-family: Lato, Calibri, "Segoe UI", Arial, sans-serif; user-select: none; -webkit-user-select: none; }
+.dgm-svg .ct { font-weight: 700; font-size: 21px; }
+.dgm-svg .cs { font-size: 14.5px; }
+.dgm-svg .pt { font-weight: 700; font-size: 17px; }
+.dgm-svg .call { font-weight: 700; font-size: 20px; }
+.dgm-svg .call2 { font-size: 16px; }
+.dgm-svg .f1, .dgm-svg .f2 { font-family: "Source Serif 4", Cambria, Georgia, serif; font-weight: 700; }
+.dgm-svg .f1 { font-size: 54px; }
+.dgm-svg .f2 { font-size: 40px; }
+.dgm-svg .f3 { font-size: 20px; font-style: italic; }
+.credit { font-size: 12px; color: var(--muted); margin: 0; }
+.disclaimer { max-width: 920px; margin: 32px 0 0; font-size: 12px; color: var(--muted); }
+@media (max-width: 900px) { .dgm-svg { width: 100%; } }
+
+/* pen overlay: covers the whole scrolling page, so ink moves with the content */
+.page { position: relative; }
+.ink { position: absolute; left: 0; top: 0; width: 100%; height: 100%; z-index: 10; pointer-events: none; overflow: visible; }
+body.ink-on .ink { pointer-events: auto; cursor: crosshair; touch-action: none; }
+body.erasing .ink { cursor: cell; }
+.inkbar { display: flex; align-items: center; gap: 4px 6px; flex-wrap: wrap; }
+.sw { width: 24px; height: 24px; border-radius: 50%; border: 2px solid rgba(255,255,255,.8); background: var(--c); cursor: pointer; padding: 0; margin-inline: 2px; }
+.sw.marker { border-radius: 5px; }
+.sw[aria-pressed="true"] { outline: 3px solid #FFFFFF; outline-offset: 2px; }
+section { min-width: 0; }
+.sequential { margin: 0; font-style: italic; color: var(--muted); font-size: calc(var(--fs) * .88); }
+h2 { font-size: var(--fs); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; margin: 0 0 6px; }
+.lines { display: grid; gap: 2px; }
+.lines p { margin: 0; }
+.lbl { font-weight: 700; }
+ul.dots { margin: 2px 0 0; padding-left: 24px; display: grid; gap: 2px; }
+.sub { margin-top: 8px; }
+
+.tablewrap { overflow-x: auto; }
+.vitals { border-collapse: collapse; margin: 2px 0 10px; }
+.vitals th { font-weight: 700; text-align: left; padding: 2px 26px 0 0; white-space: nowrap; }
+.vitals td { vertical-align: top; padding: 0 26px 2px 0; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.labs { border-collapse: collapse; margin: 2px 0 10px 24px; }
+.labs th { font-weight: 700; text-align: left; vertical-align: top; padding: 0 26px 2px 0; }
+.labs td { padding: 0 34px 2px 0; vertical-align: top; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.labs tr.first:not(:first-child) > * { padding-top: 10px; }
+.ex-inline { margin: 8px 0 4px; }
+.ex-thumb { display: inline-grid; gap: 4px; padding: 0; border: 0; background: none; cursor: zoom-in; text-align: left; color: var(--muted); font-size: 13px; }
+.ex-thumb img { display: block; max-width: min(340px, 100%); max-height: 220px; border: 1px solid var(--rule); background: #000; }
+
+/* ---------- question ---------- */
+.qblock { display: grid; gap: 10px; scroll-margin-top: 12px; }
+.qblock h2 { margin: 0; }
+.qstem { margin: 0; }
+.choices-wrap { overflow-x: auto; }
+.choices { display: grid; gap: 2px; width: max-content; min-width: 100%; }
+.choice, .choice-head { display: grid; grid-template-columns: 24px 30px minmax(0, 1fr) 30px; align-items: center; gap: 4px; padding: 5px 8px; }
+.choice { border: 1px solid transparent; border-radius: 2px; cursor: pointer; }
+.choice:hover { background: var(--soft); }
+.choices.arrows .choice, .choices.arrows .choice-head { grid-template-columns: 24px 30px repeat(4, 118px) 30px; }
+.choice-head { align-items: end; font-weight: 700; font-size: calc(var(--fs) * .82); line-height: 1.2; text-align: center; padding-bottom: 6px; border-bottom: 1px solid var(--rule); }
+.arw { display: grid; place-items: center; color: var(--ink); }
+.arw svg { width: calc(var(--fs) * .78); height: calc(var(--fs) * 1.25); }
+.choice.struck .arw { opacity: .3; }
+.choice-head .s { display: none; }
+.radio { width: 17px; height: 17px; border-radius: 50%; border: 1.5px solid #6B737D; display: grid; place-items: center; background: var(--bg); }
+.choice.selected .radio::after { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--ink); }
+.letter { font-weight: 400; }
+.choice.struck .ctext, .choice.struck .letter { text-decoration: line-through; text-decoration-thickness: 2px; color: #8A9199; }
+.choice.correct { background: var(--ok-bg); border-color: var(--ok); }
+.choice.wrong { background: var(--bad-bg); border-color: var(--bad); }
+.strike { width: 28px; height: 28px; border: 1px solid var(--rule); background: var(--bg); color: var(--muted); cursor: pointer; font-size: 13px; font-weight: 700; text-decoration: line-through; border-radius: 3px; opacity: 0; }
+@media (hover: hover) { .choice:hover .strike, .strike:focus-visible { opacity: 1; } }
+@media (hover: none) { .strike { opacity: .55; } }
+.qactions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 6px; }
+.btn { font-size: 15px; font-weight: 700; border-radius: 3px; padding: 8px 14px; cursor: pointer; border: 1px solid var(--bar); }
+.btn.primary { background: var(--bar); color: var(--bar-ink); }
+.btn.ghost { background: transparent; color: var(--bar); }
+.hint { font-size: 13px; color: var(--muted); }
+
+mark.hl { background: var(--hl); color: var(--hl-ink); padding: 0; }
+body.hl-on mark.hl { cursor: pointer; }
+
+/* ---------- bottom bar ---------- */
+.botbar { background: var(--bar); color: var(--bar-ink); border-top: 2px solid var(--bar-deep); display: flex; align-items: center; justify-content: space-between; gap: 6px 14px; padding: 5px 16px; flex-wrap: wrap; }
+.times { font-size: 12.5px; line-height: 1.35; white-space: nowrap; }
+.tools { display: flex; gap: 2px; flex-wrap: wrap; margin-left: auto; }
+.tool { background: none; border: 1px solid transparent; color: var(--bar-ink); display: grid; justify-items: center; gap: 1px; font-size: 11.5px; padding: 3px 8px; border-radius: 3px; cursor: pointer; min-width: 52px; }
+.tool svg { width: 20px; height: 20px; }
+.tool .glyph { font-size: 16px; font-weight: 700; line-height: 20px; height: 20px; }
+.tool:hover { background: rgba(255,255,255,.14); }
+.tool[aria-pressed="true"] { background: rgba(255,255,255,.2); border-color: rgba(255,255,255,.6); }
+
+/* ---------- exhibit panel + lightbox ---------- */
+.overlay { position: fixed; inset: 0; z-index: 40; background: rgba(10,16,24,.55); display: grid; place-items: center; padding: 16px; }
+.panel { background: var(--bg); color: var(--ink); width: min(520px, 100%); border-top: 6px solid var(--bar); padding: 18px 20px; display: grid; gap: 12px; max-height: 100%; overflow-y: auto; }
+.panel h3 { margin: 0; font-size: 18px; }
+.panel p { margin: 0; }
+.slot { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 12px; align-items: center; border-top: 1px solid var(--rule); padding-top: 12px; }
+.slot .thumb { width: 96px; height: 72px; background: #0C0E10; display: grid; place-items: center; overflow: hidden; color: #9AA3AE; font-size: 11px; text-align: center; }
+.slot .thumb img { width: 100%; height: 100%; object-fit: contain; }
+.slot .acts { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.mini { font-size: 13px; color: var(--ink); background: var(--soft); border: 1px solid var(--rule); border-radius: 3px; padding: 5px 9px; cursor: pointer; }
+.lightbox { position: fixed; inset: 0; z-index: 50; background: rgba(5,8,12,.9); display: grid; place-items: center; padding: 24px; }
+.lightbox img { max-width: 100%; max-height: 88vh; object-fit: contain; }
+.lightbox .mini { position: absolute; top: calc(14px + env(safe-area-inset-top, 0px)); left: 16px; }
+
+@media (min-width: 760px) { .page { padding-inline: 28px; } }
+@media (max-width: 759px) {
+  .status { position: absolute; inset: 0 auto 0 0; z-index: 5; box-shadow: 4px 0 14px rgba(0,0,0,.18); }
+}
+@media (max-width: 640px) {
+  .choices.arrows .choice, .choices.arrows .choice-head { grid-template-columns: 24px 26px repeat(4, 56px) 30px; }
+  .choice-head .f { display: none; }
+  .choice-head .s { display: inline; }
+  .vitals th, .vitals td { padding-right: 12px; }
+  .topbar { grid-template-columns: minmax(0, 1fr) auto; padding-inline: 10px; gap: 6px; }
+  .tb-left { gap: 8px; }
+  .tb-right { display: none; }
+  .tb-center { gap: 4px; }
+  .navcount { min-width: 34px; }
+  .times { display: none; }
+  .tools { margin-inline: auto; }
+  .tool { min-width: 44px; padding-inline: 5px; }
+}
+@media (max-width: 380px) {
+  .mark .mark-text { display: none; }
+  .choices.arrows .choice, .choices.arrows .choice-head { grid-template-columns: 22px 24px repeat(4, 46px) 28px; padding-inline: 6px; }
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<filter id="dshadow" x="-10%" y="-10%" width="120%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#18202E" flood-opacity="0.12"/></filter>
+<symbol id="i-heart" viewBox="0 0 512 512"><g stroke="currentColor" fill="currentColor" stroke-width="0"><path d="M289.188 22.72c-6.5.162-12.792 2.26-17.594 7.124-.483.488-.916.983-1.344 1.5l-.188-.188c-17.848 22.67-35.71 51.21-45.718 83.094-11.197 35.67-12.8 74.75 5.687 114.78l-16.968 7.845c-14.305-30.974-17.807-61.916-14.53-90.97-8.475 4.99-16.412 11.178-23.688 18.314-22.368-29.2-49.978-56.593-76.5-76-1.404-1.4-2.996-2.655-4.813-3.69-3.378-1.922-6.98-2.86-10.624-3.03-.38-.018-.745-.032-1.125-.03-.38 0-.774.016-1.155.03-5.33.203-10.67 1.93-15.438 4.563-8.72 4.816-16.545 12.77-22.5 22.937-5.954 10.168-9.036 20.86-8.906 30.78.132 9.922 3.896 20.06 12.907 25.19.368.208.753.375 1.126.56l-.126.25c27.298 16.83 63.364 39.376 86.626 67.626-6.582 22.99-7.837 46.735-2.625 67.406 15.303 60.707 62.425 115.8 113.03 150.657 25.304 17.427 51.403 29.785 74.22 35.5 22.816 5.713 41.874 4.546 53.906-2.658 27.152-16.25 45.328-45.636 56.312-80.53-6.824 4.01-14.074 7.32-21.625 9.874-35.777 12.102-78.105 8.732-113.624-10.062-35.52-18.794-64.105-53.724-70.53-103.22l18.53-2.405c5.673 43.69 29.907 72.772 60.75 89.092 30.844 16.32 68.41 19.18 98.875 8.875 30.465-10.304 53.67-32.64 59.033-68.906 4.434-29.985-3.865-70.527-33.844-121.374-19.14 2.18-38.67 6.368-56.626 11.563l-5.188-17.94c12.73-3.682 26.192-6.87 39.875-9.28 2.63.22 5.328.024 8.033-.72 1.02-.28 1.996-.63 2.937-1.03.032-.005.062-.027.094-.03-.005-.008.004-.025 0-.032 8.222-3.55 13.437-11.472 15.906-20.032 2.76-9.57 2.698-20.724-.28-32.125-2.98-11.4-8.362-21.14-15.47-28.06-5.33-5.193-12.214-9.005-19.53-9.44-2.236-.13-4.497.065-6.783.626l-.093-.406c-16.036 5.84-33.733 13.757-51 24.125-8.947 11.378-15.964 22.483-20.5 33.375-7.047 16.92-8.512 33.12-2.438 51.438l-17.72 5.906c-7.46-22.5-5.505-44.333 2.908-64.53 7.425-17.828 19.73-34.594 34.656-51.376l-.156-.157c.622-.507 1.232-1.036 1.812-1.624 7.286-7.377 8.24-18.11 5.844-27.78-2.395-9.67-8.032-19.274-16.313-27.657l-.062-.032c-8.27-8.358-17.777-14.095-27.375-16.532-2.404-.61-4.868-.992-7.344-1.125-.464-.024-.942-.055-1.406-.06-.435-.007-.88-.012-1.313 0zm.656 18.624c.36 0 .755 0 1.156.03 1.07.084 2.28.308 3.656.657 5.51 1.4 12.564 5.332 18.72 11.564 6.154 6.23 10.07 13.385 11.468 19.03 1.398 5.647.36 8.778-1 10.157-1.362 1.38-4.27 2.37-9.78.97-5.512-1.4-12.565-5.362-18.72-11.594-6.155-6.23-10.07-13.385-11.47-19.03-1.398-5.647-.36-8.747 1-10.126.895-.905 2.445-1.648 4.97-1.656zm-208.156 58.78c1.09.03 1.962.298 2.593.657 1.685.96 3.395 3.504 3.47 9.19.075 5.684-1.918 13.503-6.344 21.06-4.426 7.56-10.314 13.22-15.406 16.032-5.092 2.813-8.378 2.615-10.063 1.657-1.684-.96-3.393-3.504-3.468-9.19-.076-5.684 1.916-13.535 6.343-21.093 4.426-7.557 10.314-13.187 15.406-16 2.545-1.406 4.643-2.064 6.31-2.25.418-.046.794-.072 1.157-.062zm109.937 1.282c-13 .075-26.444 5.487-34 14.125 6.848 7.143 13.47 14.445 19.78 21.876 7.846-5.784 16.262-10.73 25.19-14.594 1.14-4.79 2.448-9.514 3.905-14.156.432-1.375.887-2.73 1.344-4.094-4.97-2.18-10.548-3.188-16.22-3.156zm203.125 15.78c.272-.02.57-.02.875 0 1.826.14 4.258 1.214 7.313 4.19 4.072 3.966 8.222 10.9 10.437 19.374 2.215 8.474 2.018 16.63.406 22.22-1.61 5.588-4.068 7.798-5.936 8.31-1.87.514-4.865-.095-8.938-4.06-4.072-3.968-8.223-10.902-10.437-19.376-2.216-8.474-2.02-16.63-.408-22.22 1.612-5.588 4.07-7.798 5.938-8.31.234-.066.478-.106.75-.126z"></path></g></symbol>
+<symbol id="i-lungs" viewBox="0 0 512 512"><g stroke="currentColor" fill="currentColor" stroke-width="0"><path d="M255.875 29.406A9 9 0 0 0 247 38.53v118.314l-15.188 18.97C232.602 181.416 233 186.87 233 192v11.156l23-28.75 23 28.75V192c0-5.13.398-10.583 1.188-16.188L265 156.845V38.53a9 9 0 0 0-9.125-9.124zM176 121c-4.204 0-14.86 3.97-26.688 12.063-11.828 8.094-25.28 19.814-38.125 33.468-25.688 27.31-48.756 62.726-54.343 91.19-7.464 38.02-11.432 81.626-11.532 119.342-.1 37.717 4.43 70.268 10.75 82.907.458.913 2.002 2.488 6.47 3.717 4.466 1.23 11.21 1.775 19.187 1.313 15.95-.925 36.805-5.69 57.06-13.406 20.257-7.717 40-18.395 54.126-30.438C207.033 409.113 215 396.25 215 384V192c0-13.92-4.043-33.063-11.375-47.625C196.293 129.813 186.832 121 176 121zm160 0c-10.832 0-20.293 8.813-27.625 23.375C301.043 158.937 297 178.08 297 192v192c0 12.25 7.967 25.113 22.094 37.156 14.127 12.043 33.87 22.72 54.125 30.438 20.255 7.716 41.11 12.48 57.06 13.406 7.977.462 14.722-.084 19.19-1.313 4.466-1.228 6.01-2.804 6.467-3.718 6.32-12.64 10.85-45.19 10.75-82.908-.1-37.716-4.067-81.32-11.53-119.343-5.588-28.464-28.656-63.88-54.344-91.19-12.845-13.653-26.297-25.374-38.125-33.468C350.858 124.97 340.204 121 336 121z"></path></g></symbol>
+<symbol id="i-broken" viewBox="0 0 512 512"><g stroke="currentColor" fill="currentColor" stroke-width="0"><path d="M473.7 73.8l-2.4-2.5c-46-47-118-51.7-169.6-14.8L336 159.9l-96 64 48 128-144-144 96-64-28.6-86.5C159.7 19.6 87 24 40.7 71.4l-2.4 2.4C-10.4 123.6-12.5 202.9 31 256l212.1 218.6c7.1 7.3 18.6 7.3 25.7 0L481 255.9c43.5-53 41.4-132.3-7.3-182.1z"></path></g></symbol>
+<symbol id="i-drop" viewBox="0 0 24 24"><g stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"></path></g></symbol>
+<symbol id="i-wrench" viewBox="0 0 512 512"><g stroke="currentColor" fill="currentColor" stroke-width="0"><path d="M417.972 37.51c-1.67-.02-3.093.17-4.218.544l-20.127 6.71 63.95 63.948-22.628 22.627 21.212 21.212 27.576-27.578c6.01-6.01 7.04-13.12 4.383-23.152-2.655-10.033-9.698-21.883-18.933-32.438-9.235-10.554-20.62-19.874-31.123-25.603-7.878-4.297-15.083-6.214-20.092-6.27zM354.338 98.81l-45.952 45.95c5.99 1.255 12.28 2.304 18.506 2.534 12.166.45 23.204-1.815 32.397-11.008l6.362-6.363 17.64 17.64.073.073 4.914 4.914 9.9-9.9-43.842-43.84zm67.884 45.254l-21.214 21.215 21.212 21.213 21.213-21.214-21.21-21.214zm-56.57 14.156c-1.773 0-3.545.703-4.95 2.107-2.808 2.808-2.808 7.09 0 9.9 2.81 2.81 7.09 2.81 9.9 0 2.808-2.81 2.808-7.092 0-9.9-1.405-1.405-3.177-2.108-4.95-2.108zm-72.32 1.596l-28.09 28.09 93.516 93.513c1.927-.694 5.33-2.472 9.257-5.14 4.036-2.746 8.643-6.35 13.44-10.464-7.204 2.642-15.128 1.97-21.463-4.366l-33.942-33.94c-16.086-16.088 4.237-42.443 23.043-41.142 1.67.116 3.328.455 4.948 1.034-2.19-1.138-4.24-2.62-6.066-4.446-5.053-5.053-7.464-11.816-7.246-18.507-4.92.785-9.81 1.008-14.502.834-12.924-.478-24.25-3.404-32.894-5.466zm94.226 17.47c-1.107 2.04-2.513 3.953-4.228 5.668-7.18 7.18-17.813 9.033-26.78 5.573 1.688.903 3.32 2.09 4.856 3.624l33.94 33.94c6.817 6.816 7.093 15.475 3.722 23.093 8.43-8.698 16.1-17.75 21.014-24.975 2.67-3.925 4.45-7.328 5.144-9.256l-37.668-37.668zM254.3 202.42l-26.195 43.66 4.04 19.296 17.374 3.31 35.523-35.523L254.3 202.42zm93.024 1.96c-3.75.04-11.022 7.926-8.547 10.4l33.94 33.942c2.83 2.828 12.73-7.07 9.902-9.898l-33.943-33.942c-.353-.353-.817-.508-1.353-.502zm-38.24 52.824l-4.95 4.95c-7.424 7.424-10.522 14.256-11.244 19.304-.72 5.05.637 8.274 2.758 10.395 2.12 2.12 5.346 3.48 10.395 2.758 5.048-.72 11.88-3.82 19.304-11.244l4.95-4.95-21.213-21.212zm-95.91 5.4L47.7 428.076c4.836 1.544 9.377 4.213 13.188 8.024 3.812 3.813 6.48 8.357 8.024 13.192l165.215-165.215-17.143-3.265-3.81-18.21zM37.554 444.377c-3.82 0-7.638 1.485-10.605 4.45-5.934 5.935-5.934 15.28 0 21.214 5.932 5.934 15.28 5.934 21.212 0 5.933-5.933 5.933-15.28 0-21.213-2.967-2.967-6.788-4.452-10.608-4.452z"></path></g></symbol>
+<symbol id="i-kidneys" viewBox="0 0 512 512"><g stroke="currentColor" fill="currentColor" stroke-width="0"><path d="M344.1 40.2c-10 4.77-17.3 11.14-20.6 18.48-3.3 7.34-3.5 16.4 3.3 29.82 4.8 9.28 14.3 20.4 23.7 32.7 9.4 12.2 18.8 25.9 22.4 42.2 4.7 21.5-2.9 44-8.9 63.8-3.1 10-5.8 19.3-7 26.9-1.2 7.6-.6 13.2 1.1 16.5 6.1 11.4 14.3 16.3 25 17.9 10.7 1.6 24.1-1 37.5-7.1 26.9-12 53.3-37.9 61.4-61.3 6.4-18.3 4.5-63-8.3-103.2-12.7-40.18-35.8-75.54-65.2-83.88-19.7-4.57-47.3-.68-64.4 7.18zm-240.6-7.16C74.09 41.39 51.04 76.75 38.25 117 25.46 157.1 23.63 201.8 30 220.1c8.14 23.4 34.53 49.3 61.39 61.3 13.41 6.1 26.81 8.7 37.51 7.1 10.7-1.6 18.9-6.5 25-17.9 1.7-3.3 2.3-8.9 1.1-16.5-1.2-7.6-3.9-16.9-7-26.9-6-19.8-13.6-42.3-8.9-63.8 3.6-16.3 13-30 22.4-42.2 9.4-12.3 18.9-23.42 23.7-32.7 6.8-13.42 6.6-22.48 3.3-29.82s-10.6-13.7-20.6-18.47c-21-7-42.9-13.15-64.4-7.17zm59.1 118.86c-3 5.9-5 11.6-6.3 17.2 12.6 6.3 23.8 13.8 28.3 20.4 25 36.3 33.8 107.5 35 168.9 1.1 61.4-4.5 121-4.5 121l17.8 2s5.8-60.6 4.6-123.4c-1.1-62.7-8.3-135.4-38.1-178.7-8.3-12-22.3-20.7-36.8-27.4zm186.8 0c-14.5 6.7-28.5 15.4-36.8 27.4-29.8 43.3-37 116-38.1 178.7-1.2 62.8 4.6 123.4 4.6 123.4l17.8-2s-5.6-59.6-4.5-121c1.2-61.4 10-132.6 35-168.9 4.5-6.6 15.7-14.1 28.3-20.4-1.3-6.1-3.8-12.4-6.3-17.2z"></path></g></symbol>
+<symbol id="i-tint" viewBox="0 0 352 512"><g stroke="currentColor" fill="currentColor" stroke-width="0"><path d="M205.22 22.09c-7.94-28.78-49.44-30.12-58.44 0C100.01 179.85 0 222.72 0 333.91 0 432.35 78.72 512 176 512s176-79.65 176-178.09c0-111.75-99.79-153.34-146.78-311.82zM176 448c-61.75 0-112-50.25-112-112 0-8.84 7.16-16 16-16s16 7.16 16 16c0 44.11 35.89 80 80 80 8.84 0 16 7.16 16 16s-7.16 16-16 16z"></path></g></symbol>
+</defs></svg>
+<div class="app">
+  <header class="topbar">
+    <div class="tb-left">
+      <button class="icon-btn" id="navToggle" type="button" aria-label="Item list" aria-controls="status" aria-expanded="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+      </button>
+      <div class="itembox"><div>Item: <span id="itemNo">1</span> of <span id="itemTotal">2</span></div><div>Block: 1 of 1</div></div>
+      <label class="mark"><input type="checkbox" id="markBox">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V3.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 4h12l-3 4.5 3 4.5H6z" fill="var(--flag)"/></svg>
+        <span class="mark-text">Mark</span></label>
+    </div>
+    <nav class="tb-center" aria-label="Item navigation">
+      <button class="navbtn" id="prevBtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 4 5 12l11 8z" fill="currentColor"/></svg>Previous</button>
+      <span class="navcount" id="navCount">1 / 2</span>
+      <button class="navbtn" id="nextBtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4l11 8-11 8z" fill="currentColor"/></svg>Next</button>
+    </nav>
+    <div class="tb-right" aria-hidden="true"></div>
+  </header>
+
+  <div class="middle">
+    <aside class="status" id="status" aria-label="Items in this block"><ol id="statusList"></ol></aside>
+
+    <div class="scroller" id="scroller">
+      <main class="page">
+        <svg class="ink" id="ink" aria-hidden="true"></svg>
+        <article class="item" id="item" data-hl>
+
+          <p class="sequential" id="seqNote"></p>
+
+          <section class="vg">
+            <h2>Patient Information</h2>
+            <div class="lines">
+              <p><span class="lbl">Age:</span> 34 years</p>
+              <p><span class="lbl">Gender:</span> M, self-identified</p>
+              <p><span class="lbl">Race/Ethnicity:</span> unspecified</p>
+              <p><span class="lbl">Site of Care:</span> emergency department</p>
+            </div>
+          </section>
+
+          <section class="vg">
+            <h2>History</h2>
+            <div class="lines">
+              <p><span class="lbl">Reason for Visit/Chief Concern:</span> “My chest hurts, and I can’t catch my breath.”</p>
+              <div class="sub">
+                <p class="lbl">History of Present Illness:</p>
+                <ul class="dots">
+                  <li>brought to the emergency department 30 minutes after a high-speed head-on motor vehicle collision</li>
+                  <li>was the unrestrained driver</li>
+                  <li>reports that his chest struck the steering wheel at the time of the collision</li>
+                  <li>has had chest pain and shortness of breath since the collision</li>
+                </ul>
+              </div>
+              <div class="sub">
+                <p class="lbl">Past Medical History:</p>
+                <ul class="dots">
+                  <li>seasonal allergic rhinitis</li>
+                  <li>appendectomy at age 15 years</li>
+                </ul>
+              </div>
+              <div class="sub">
+                <p class="lbl">Medications:</p>
+                <ul class="dots">
+                  <li>loratadine as needed</li>
+                </ul>
+              </div>
+              <div class="sub">
+                <p class="lbl">Allergies:</p>
+                <ul class="dots">
+                  <li>peanuts (hives)</li>
+                  <li>penicillin (rash)</li>
+                </ul>
+              </div>
+              <div class="sub">
+                <p class="lbl">Family History:</p>
+                <ul class="dots">
+                  <li>mother: hypertension</li>
+                  <li>father: died of myocardial infarction at age 65 years</li>
+                </ul>
+              </div>
+              <div class="sub">
+                <p class="lbl">Psychosocial History:</p>
+                <ul class="dots">
+                  <li>lives with his wife; works as a warehouse supervisor</li>
+                  <li>drinks two to three beers on weekends; last drink 4 days ago</li>
+                  <li>has never smoked cigarettes; does not use other substances</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <section class="vg">
+            <h2>Physical Examination</h2>
+            <div class="tablewrap">
+              <table class="vitals">
+                <thead><tr><th>Temp</th><th>Pulse</th><th>Resp</th><th>BP</th><th>O<sub>2</sub> Sat</th><th>Ht</th><th>Wt</th><th>BMI</th></tr></thead>
+                <tbody><tr>
+                  <td>37.0°C<br>(98.6°F)</td><td>118/min</td><td>28/min</td><td>76/54 mm Hg</td><td>89%<br>on RA</td>
+                  <td>178 cm<br>(5 ft 10 in)</td><td>82 kg<br>(181 lb)</td><td>26 kg/m<sup>2</sup></td>
+                </tr></tbody>
+              </table>
+            </div>
+            <ul class="dots">
+              <li>Appearance: He is diaphoretic. A cervical collar is in place.</li>
+              <li>Airway: The airway is patent.</li>
+              <li>HEENT: Conjunctivae are pink, and sclerae are anicteric. There are no facial lacerations. Pupils are equal and reactive to light. The trachea is midline. Jugular venous pressure is 14 cm H<sub>2</sub>O.</li>
+              <li>Pulmonary: There is ecchymosis and tenderness over the sternum and the left side of the chest. Breath sounds are equal bilaterally. Crackles are heard at both lung bases.</li>
+              <li>Cardiac: S<sub>1</sub> and S<sub>2</sub> are clearly audible. An S<sub>3</sub> is heard.</li>
+              <li>Abdominal: The abdomen is soft and nontender and moves with respiration. There is no distention or ecchymosis.</li>
+              <li>Pelvis: The pelvis is stable.</li>
+              <li>Extremities: There are abrasions over both forearms. There are no deformities.</li>
+              <li>Neurologic: He is oriented to person but not to place or time. He moves all four extremities, and sensation is intact.</li>
+            </ul>
+          </section>
+
+          <section class="vg">
+            <h2>Diagnostic Studies</h2>
+            <div class="tablewrap">
+              <table class="labs">
+                <tbody>
+                  <tr class="first"><th scope="rowgroup" rowspan="3">Blood</th><td>Hemoglobin</td><td>14.1 g/dL</td></tr>
+                  <tr><td>Leukocyte count</td><td>12,900/mm<sup>3</sup></td></tr>
+                  <tr><td>Platelet count</td><td>250,000/mm<sup>3</sup></td></tr>
+                  <tr class="first"><th scope="rowgroup" rowspan="9">Serum</th><td>Na<sup>+</sup></td><td>139 mEq/L</td></tr>
+                  <tr><td>K<sup>+</sup></td><td>4.2 mEq/L</td></tr>
+                  <tr><td>Cl<sup>−</sup></td><td>103 mEq/L</td></tr>
+                  <tr><td>HCO<sub>3</sub><sup>−</sup></td><td>18 mEq/L</td></tr>
+                  <tr><td>Urea nitrogen</td><td>18 mg/dL</td></tr>
+                  <tr><td>Creatinine</td><td>1.2 mg/dL</td></tr>
+                  <tr><td>Glucose</td><td>158 mg/dL</td></tr>
+                  <tr><td>Lactate</td><td>4.8 mmol/L</td></tr>
+                  <tr><td>Troponin I</td><td>pending</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <ul class="dots">
+              <li>ECG: sinus tachycardia with frequent premature ventricular contractions
+                <div class="ex-inline" data-show="ecg" hidden></div></li>
+              <li>focused assessment with sonography in trauma (FAST): unremarkable</li>
+              <li>portable chest x-ray: sternal fracture; pulmonary vascular congestion; no other abnormalities
+                <div class="ex-inline" data-show="cxr" hidden></div></li>
+            </ul>
+          </section>
+
+          <section class="qblock" id="question" aria-live="polite">
+            <h2>Question:</h2>
+            <p class="qstem" id="qStem"></p>
+            <div class="choices-wrap"><div class="choices" id="choices" role="radiogroup" aria-labelledby="qStem"></div></div>
+            <div class="qactions">
+              <button class="btn primary" id="revealBtn" type="button">Show answer</button>
+              <button class="btn ghost" id="resetBtn" type="button">Reset item</button>
+              <span class="hint">Click to select · right-click or S to cross out</span>
+            </div>
+          </section>
+
+          <section class="explain wide" id="explain" hidden>
+            <h2>Explanation:</h2>
+            <ol class="answer-key" id="answerKey"></ol>
+            <div id="diagrams"></div>
+            <p class="credit">Icons: game-icons.net (CC BY 3.0), Font Awesome (CC BY 4.0), Lucide (ISC).</p>
+          </section>
+
+        </article>
+        <p class="disclaimer">Created by Dr. Elezer Berhanu Zewde, M.D. · Original practice item for teaching. Not affiliated with or endorsed by the USMLE program, NBME, or FSMB.</p>
+      </main>
+    </div>
+  </div>
+
+  <footer class="botbar">
+    <div class="times" id="times"><div>Block Time Remaining: untimed</div><div>Day Time Remaining: untimed</div></div>
+    <div class="inkbar" id="inkbar" role="toolbar" aria-label="Pen" hidden>
+      <button class="sw" type="button" data-ink="red" style="--c:#D7263D" aria-label="Red pen"></button>
+      <button class="sw" type="button" data-ink="blue" style="--c:#1F6FD1" aria-label="Blue pen"></button>
+      <button class="sw" type="button" data-ink="black" style="--c:#111418" aria-label="Black pen"></button>
+      <button class="sw marker" type="button" data-ink="marker" style="--c:#FFE14D" aria-label="Yellow marker"></button>
+      <button class="tool" id="eraseBtn" type="button" aria-pressed="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 4 6 6-9 9H7l-3-3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m9 9 6 6M11 20h9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Eraser</button>
+      <button class="tool" id="undoBtn" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7 4 12l5 5M4 12h11a5 5 0 0 1 0 10h-3" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>Undo</button>
+      <button class="tool" id="inkClearBtn" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Clear ink</button>
+    </div>
+    <div class="tools" role="toolbar" aria-label="Tools">
+      <button class="tool" id="hlBtn" type="button" aria-pressed="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h9" fill="none" stroke="var(--hl)" stroke-width="3.2" stroke-linecap="round"/><path d="m14.5 3.5 5.5 5.5-8.5 8.5H6v-5.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Highlight</button>
+      <button class="tool" id="penBtn" type="button" aria-pressed="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1-4.5L16 4.5l3.5 3.5L8.5 19z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 7l3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 20l4.5-1" fill="none" stroke="#FF6B6B" stroke-width="2.6" stroke-linecap="round"/></svg>Pen</button>
+      <button class="tool" id="clearBtn" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 4 6 6-9 9H7l-3-3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m9 9 6 6M11 20h9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Clear</button>
+      <button class="tool" id="smaller" type="button" aria-label="Smaller text"><span class="glyph" aria-hidden="true">A−</span>Text</button>
+      <button class="tool" id="bigger" type="button" aria-label="Larger text"><span class="glyph" aria-hidden="true">A+</span>Text</button>
+      <button class="tool" id="toQ" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v15M6 13l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Question</button>
+      <button class="tool" id="toTop" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V5M6 11l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Top</button>
+      <button class="tool" id="exBtn" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m6 16 4-5 3 3.5 2-2 3 3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Exhibits</button>
+    </div>
+  </footer>
+</div>
+
+<div class="overlay" id="exPanel" hidden>
+  <div class="panel" role="dialog" aria-modal="true" aria-labelledby="exTitle">
+    <h3 id="exTitle">Exhibit images</h3>
+    <p class="hint">Optional. Add your own ECG or chest x-ray image and it appears under that line in Diagnostic Studies. Images are kept in this browser only.</p>
+    <div class="slot" data-key="ecg"></div>
+    <div class="slot" data-key="cxr"></div>
+    <div><button class="btn primary" id="exClose" type="button">Done</button></div>
+  </div>
+</div>
+
+<script>
+/* ---------- the item (edit the text here) ---------- */
+const ITEMS = [
+  {
+    stem: 'Which of the following sets of hemodynamic findings is most likely in this patient?',
+    type: 'arrows',
+    cols: ['Central venous pressure', 'Pulmonary capillary wedge pressure', 'Cardiac output', 'Systemic vascular resistance'],
+    choices: [['↓', '↓', '↓', '↑'], ['↓', '↓', '↓', '↓'], ['↑', '↓', '↓', '↑'], ['↑', '↑', '↓', '↑'], ['↓', '↓', '↑', '↓']],
+    labels: ['Hypovolemic shock', 'Neurogenic shock', 'Obstructive shock', 'Cardiogenic shock', 'Septic shock'],
+    answer: 3
+  }
+];
+
+const $ = s => document.querySelector(s);
+const FLAG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V3.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 4h12l-3 4.5 3 4.5H6z" fill="var(--flag)"/></svg>';
+const COL_SHORT = ['CVP', 'PCWP', 'CO', 'SVR'];
+const ARROW_UP = '<svg viewBox="0 0 16 22" aria-hidden="true"><path d="M8 1 2.2 8.6h4.5V21h2.6V8.6h4.5z" fill="currentColor"/></svg>';
+const ARROW_DOWN = '<svg viewBox="0 0 16 22" aria-hidden="true"><path d="M8 21 2.2 13.4h4.5V1h2.6v12.4h4.5z" fill="currentColor"/></svg>';
+const WORD = { '↑': 'increased', '↓': 'decreased' };
+const letter = i => String.fromCharCode(65 + i);
+const state = ITEMS.map(() => ({ selected: null, struck: new Set(), revealed: false, marked: false }));
+let cur = 0;
+let hlOn = true;
+
+function renderStatus() {
+  const ol = $('#statusList');
+  ol.innerHTML = '';
+  ITEMS.forEach((_, i) => {
+    const li = document.createElement('li');
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.dataset.i = i;
+    if (i === cur) b.setAttribute('aria-current', 'true');
+    b.innerHTML = `<span>${i + 1}</span>${state[i].marked ? FLAG : ''}`;
+    b.setAttribute('aria-label', `Item ${i + 1}${state[i].marked ? ', marked' : ''}`);
+    li.appendChild(b);
+    ol.appendChild(li);
+  });
+}
+
+function renderItem() {
+  const it = ITEMS[cur], st = state[cur];
+  $('#itemNo').textContent = cur + 1;
+  $('#itemTotal').textContent = ITEMS.length;
+  $('#navCount').textContent = `${cur + 1} / ${ITEMS.length}`;
+  $('#prevBtn').disabled = cur === 0;
+  $('#nextBtn').disabled = cur === ITEMS.length - 1;
+  $('#markBox').checked = st.marked;
+  const showV = it.vignette !== false;
+  document.querySelectorAll('.vg').forEach(sec => { sec.hidden = !showV; });
+  $('#seqNote').hidden = ITEMS.length < 2;
+  $('#seqNote').textContent = showV
+    ? `The following vignette applies to the next ${ITEMS.length} items. The items in the set must be answered in sequential order.`
+    : 'This item continues the case from Item 1.';
+  $('#toQ').hidden = $('#toTop').hidden = !showV;
+  $('#qStem').textContent = it.stem;
+  const box = $('#choices');
+  box.innerHTML = '';
+  box.classList.toggle('arrows', it.type === 'arrows');
+  if (it.type === 'arrows') {
+    const head = document.createElement('div');
+    head.className = 'choice-head';
+    head.setAttribute('aria-hidden', 'true');
+    head.innerHTML = '<span></span><span></span>' + it.cols.map((c, j) => `<span><span class="f">${c}</span><span class="s">${COL_SHORT[j]}</span></span>`).join('') + '<span></span>';
+    box.appendChild(head);
+  }
+  it.choices.forEach((c, i) => {
+    const row = document.createElement('div');
+    row.className = 'choice';
+    row.tabIndex = 0;
+    row.dataset.i = i;
+    row.setAttribute('role', 'radio');
+    row.setAttribute('aria-checked', st.selected === i ? 'true' : 'false');
+    const body = it.type === 'arrows'
+      ? c.map(a => `<span class="ctext arw">${a === '↑' ? ARROW_UP : ARROW_DOWN}</span>`).join('')
+      : `<span class="ctext">${c}</span>`;
+    if (it.type === 'arrows') row.setAttribute('aria-label', `${letter(i)}: ` + c.map((a, j) => `${COL_SHORT[j]} ${WORD[a]}`).join(', '));
+    row.innerHTML = `<span class="radio" aria-hidden="true"></span><span class="letter">${letter(i)}.</span>${body}<button class="strike" type="button" title="Cross out" aria-label="Cross out choice ${letter(i)}">S</button>`;
+    if (st.selected === i) row.classList.add('selected');
+    if (st.struck.has(i)) row.classList.add('struck');
+    if (st.revealed) {
+      if (i === it.answer) row.classList.add('correct');
+      else if (i === st.selected) row.classList.add('wrong');
+    }
+    box.appendChild(row);
+  });
+  $('#explain').hidden = !st.revealed;
+  $('#answerKey').innerHTML = st.revealed && it.labels
+    ? it.labels.map((l, i) => `<li class="${i === it.answer ? 'correct' : ''}"><span class="k">${letter(i)}.</span>${l}${i === it.answer ? ' (correct answer)' : ''}</li>`).join('')
+    : '';
+  $('#revealBtn').textContent = st.revealed ? 'Hide answer' : 'Show answer';
+  renderStatus();
+}
+
+function goTo(i) {
+  if (i < 0 || i >= ITEMS.length || i === cur) return;
+  cur = i;
+  renderItem();
+  $('#scroller').scrollTo({ top: 0 });
+  if (window.innerWidth < 760) setNav(false);
+}
+
+function toggleStrike(i) {
+  const st = state[cur];
+  st.struck.has(i) ? st.struck.delete(i) : st.struck.add(i);
+  if (st.selected === i) st.selected = null;
+  renderItem();
+}
+$('#choices').addEventListener('click', e => {
+  const row = e.target.closest('.choice');
+  if (!row) return;
+  const sel = window.getSelection();
+  if (sel && !sel.isCollapsed) return;
+  const i = +row.dataset.i;
+  if (e.target.closest('.strike')) return toggleStrike(i);
+  state[cur].struck.delete(i);
+  state[cur].selected = i;
+  renderItem();
+});
+$('#choices').addEventListener('contextmenu', e => {
+  const row = e.target.closest('.choice');
+  if (!row) return;
+  e.preventDefault();
+  toggleStrike(+row.dataset.i);
+});
+$('#choices').addEventListener('keydown', e => {
+  const row = e.target.closest('.choice');
+  if (!row || e.target.closest('.strike')) return;
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); state[cur].selected = +row.dataset.i; renderItem(); }
+  if (e.key === 's' || e.key === 'S') { e.preventDefault(); toggleStrike(+row.dataset.i); }
+});
+$('#revealBtn').addEventListener('click', () => { state[cur].revealed = !state[cur].revealed; renderItem(); });
+$('#resetBtn').addEventListener('click', () => { state[cur] = { selected: null, struck: new Set(), revealed: false, marked: state[cur].marked }; renderItem(); });
+$('#prevBtn').addEventListener('click', () => goTo(cur - 1));
+$('#nextBtn').addEventListener('click', () => goTo(cur + 1));
+$('#statusList').addEventListener('click', e => { const b = e.target.closest('button'); if (b) goTo(+b.dataset.i); });
+$('#markBox').addEventListener('change', e => { state[cur].marked = e.target.checked; renderStatus(); });
+$('#toQ').addEventListener('click', () => $('#question').scrollIntoView({ block: 'start', behavior: 'smooth' }));
+$('#toTop').addEventListener('click', () => $('#scroller').scrollTo({ top: 0, behavior: 'smooth' }));
+document.addEventListener('keydown', e => {
+  if (e.altKey && (e.key === 'n' || e.key === 'N')) { e.preventDefault(); goTo(cur + 1); }
+  if (e.altKey && (e.key === 'p' || e.key === 'P')) { e.preventDefault(); goTo(cur - 1); }
+  if (e.key === 'Escape') { document.querySelectorAll('.lightbox').forEach(l => l.remove()); $('#exPanel').hidden = true; }
+});
+
+/* ---------- item list toggle ---------- */
+function setNav(open) {
+  $('#status').hidden = !open;
+  $('#navToggle').setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+setNav(window.innerWidth >= 760);
+$('#navToggle').addEventListener('click', () => setNav($('#status').hidden));
+
+/* ---------- highlighter: select text in the item to highlight; click a highlight to remove it ---------- */
+function inZone(node) {
+  const el = node.nodeType === 3 ? node.parentElement : node;
+  return el && el.closest('[data-hl]') && !el.closest('button, .strike, .ex-inline, svg');
+}
+function applyHighlight() {
+  if (!hlOn) return;
+  const sel = window.getSelection();
+  if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return;
+  const range = sel.getRangeAt(0);
+  if (!inZone(range.startContainer) || !inZone(range.endContainer)) return;
+  let root = range.commonAncestorContainer;
+  if (root.nodeType === 3) root = root.parentNode;
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+    acceptNode: n => (n.nodeValue.trim() && range.intersectsNode(n) && inZone(n) && !n.parentElement.closest('mark.hl'))
+      ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT
+  });
+  const nodes = [];
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+  const sC = range.startContainer, sO = range.startOffset, eC = range.endContainer, eO = range.endOffset;
+  nodes.forEach(node => {
+    const start = node === sC ? sO : 0;
+    const end = node === eC ? eO : node.nodeValue.length;
+    if (start >= end) return;
+    let mid = node;
+    if (start > 0) mid = node.splitText(start);
+    if (end - start < mid.nodeValue.length) mid.splitText(end - start);
+    const mark = document.createElement('mark');
+    mark.className = 'hl';
+    mid.parentNode.insertBefore(mark, mid);
+    mark.appendChild(mid);
+  });
+  sel.removeAllRanges();
+}
+document.addEventListener('mouseup', () => setTimeout(applyHighlight, 0));
+document.addEventListener('touchend', () => setTimeout(applyHighlight, 250));
+function unwrap(m) { const p = m.parentNode; while (m.firstChild) p.insertBefore(m.firstChild, m); p.removeChild(m); p.normalize(); }
+document.addEventListener('click', e => {
+  const m = e.target.closest('mark.hl');
+  if (!m || !hlOn) return;
+  const sel = window.getSelection();
+  if (sel && !sel.isCollapsed) return;
+  unwrap(m);
+  e.stopPropagation();
+}, true);
+$('#clearBtn').addEventListener('click', () => document.querySelectorAll('mark.hl').forEach(unwrap));
+
+/* ---------- text size (remembered in this browser) ---------- */
+let scale = 1;
+try { const s = parseFloat(localStorage.getItem('ehr-scale')); if (s >= 0.8 && s <= 1.6) scale = s; } catch (e) {}
+function applyScale() {
+  document.documentElement.style.setProperty('--scale', scale.toFixed(2));
+  try { localStorage.setItem('ehr-scale', String(scale)); } catch (e) {}
+}
+applyScale();
+$('#smaller').addEventListener('click', () => { scale = Math.max(0.8, scale - 0.1); applyScale(); });
+$('#bigger').addEventListener('click', () => { scale = Math.min(1.6, scale + 0.1); applyScale(); });
+
+/* ---------- optional exhibit images (kept in this browser) ---------- */
+const EX_NAME = { ecg: 'ECG', cxr: 'Chest x-ray' };
+function idb() {
+  return new Promise((resolve, reject) => {
+    try {
+      const req = indexedDB.open('ehr-exhibits', 1);
+      req.onupgradeneeded = () => req.result.createObjectStore('img');
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    } catch (e) { reject(e); }
+  });
+}
+async function idbGet(k) { try { const db = await idb(); return await new Promise(r => { const q = db.transaction('img').objectStore('img').get(k); q.onsuccess = () => r(q.result || null); q.onerror = () => r(null); }); } catch (e) { return null; } }
+async function idbSet(k, v) { try { const db = await idb(); await new Promise(r => { const t = db.transaction('img', 'readwrite'); v == null ? t.objectStore('img').delete(k) : t.objectStore('img').put(v, k); t.oncomplete = r; t.onerror = r; }); } catch (e) {} }
+const exImg = { ecg: null, cxr: null };
+function renderExhibit(k) {
+  const src = exImg[k];
+  const slot = document.querySelector(`.slot[data-key="${k}"]`);
+  slot.innerHTML = `<div class="thumb">${src ? `<img src="${src}" alt="">` : 'no image'}</div>
+    <div><p><b>${EX_NAME[k]}</b></p><div class="acts">
+      <button class="mini" type="button" data-act="add">${src ? 'Replace' : 'Add image'}</button>
+      ${src ? '<button class="mini" type="button" data-act="remove">Remove</button>' : ''}
+      <input type="file" accept="image/*" hidden></div></div>`;
+  const inline = document.querySelector(`.ex-inline[data-show="${k}"]`);
+  inline.hidden = !src;
+  inline.innerHTML = src ? `<button class="ex-thumb" type="button"><img src="${src}" alt="${EX_NAME[k]} exhibit">Exhibit: ${EX_NAME[k]} (click to enlarge)</button>` : '';
+}
+['ecg', 'cxr'].forEach(k => { renderExhibit(k); idbGet(k).then(src => { if (src) { exImg[k] = src; renderExhibit(k); } }); });
+$('#exBtn').addEventListener('click', () => { $('#exPanel').hidden = false; $('#exClose').focus(); });
+$('#exClose').addEventListener('click', () => { $('#exPanel').hidden = true; });
+$('#exPanel').addEventListener('click', e => {
+  if (e.target === e.currentTarget) { e.currentTarget.hidden = true; return; }
+  const b = e.target.closest('[data-act]');
+  if (!b) return;
+  const slot = b.closest('.slot'), k = slot.dataset.key;
+  if (b.dataset.act === 'add') slot.querySelector('input').click();
+  if (b.dataset.act === 'remove') { exImg[k] = null; idbSet(k, null); renderExhibit(k); }
+});
+$('#exPanel').addEventListener('change', e => {
+  const f = e.target.files && e.target.files[0];
+  if (!f) return;
+  const k = e.target.closest('.slot').dataset.key;
+  const reader = new FileReader();
+  reader.onload = () => { exImg[k] = reader.result; idbSet(k, reader.result); renderExhibit(k); };
+  reader.readAsDataURL(f);
+});
+document.addEventListener('click', e => {
+  const t = e.target.closest('.ex-thumb');
+  if (!t) return;
+  const src = t.querySelector('img').src;
+  const lb = document.createElement('div');
+  lb.className = 'lightbox';
+  lb.innerHTML = `<button class="mini" type="button">Close</button><img src="${src}" alt="">`;
+  lb.addEventListener('click', () => lb.remove());
+  document.body.appendChild(lb);
+});
+
+/* ---------- explanation diagrams: circulation drawn as plumbing ---------- */
+const NS = 'http://www.w3.org/2000/svg';
+const CW = 198, CH = 120;
+const CARDS = {
+  rh: { x: 201, y: 17, t: 'Right heart', s: 'RA · RV', icon: 'heart' },
+  lu: { x: 435, y: 17, t: 'Lungs', s: 'pulm. capillaries', icon: 'lungs' },
+  lh: { x: 669, y: 17, t: 'Left heart', s: 'LA · LV = the pump', icon: 'heart' },
+  ve: { x: 22, y: 269, t: 'Veins', s: 'the volume “tank”', icon: 'drop' },
+  ar: { x: 849, y: 269, t: 'Arteries', s: 'the “pipes”', icon: 'wrench' },
+  or: { x: 435, y: 521, t: 'Organs', s: 'brain · kidney · gut', icon: 'kidneys', above: true }
+};
+/* Loop segments in the normal direction of flow; heads = [x, y, angle] of each arrowhead (0 = right, 90 = down). */
+const SEGS = {
+  vr: { d: 'M120 410 V157 A80 80 0 0 1 200 77 H202', heads: [[120, 203, 270]] },
+  rl: { d: 'M398 77 H436', heads: [[417, 77, 0]] },
+  ll: { d: 'M632 77 H670', heads: [[651, 77, 0]] },
+  la: { d: 'M866 77 H868 A80 80 0 0 1 948 157 V410', heads: [[948, 203, 90]] },
+  ao: { d: 'M948 410 V500 A80 80 0 0 1 868 580 H634', heads: [[948, 467, 90], [750, 580, 180]] },
+  ov: { d: 'M434 580 H200 A80 80 0 0 1 120 500 V410', heads: [[325, 580, 180], [120, 467, 270]] }
+};
+const SEG_LOOK = {
+  norm: { stroke: '#ECC6CD', head: '#E096A4', size: 1 },
+  back: { stroke: '#F2AAB6', head: '#C8102E', size: 1.3, rev: true },
+  low: { stroke: '#D6E2ED', head: '#8EA7C1', size: 0.85 },
+  fast: { stroke: '#ECC6CD', head: '#D0334F', size: 1, double: true },
+  block: { stroke: '#ECC6CD', head: null }
+};
+const CARD_LOOK = {
+  norm: { fill: '#FFFFFF', stroke: '#DCE1E8', icon: '#C8102E', t: '#1D2230', s: '#5F6672' },
+  plain: { fill: '#F3F5F8', stroke: '#D3D9E1', icon: '#1D2230', t: '#1D2230', s: '#5F6672' },
+  hi: { fill: '#FCE4E8', stroke: '#F1B5BF', icon: '#C8102E', t: '#1D2230', s: '#5F6672' },
+  lo: { fill: '#E4EDF6', stroke: '#B9CCDF', icon: '#2C6491', t: '#1D2230', s: '#5F6672' },
+  fail: { fill: '#C8102E', stroke: '#C8102E', icon: '#FFFFFF', t: '#FFFFFF', s: '#FBE3E7' }
+};
+const PILL_LOOK = { dark: '#1F2433', up: '#C8102E', down: '#2C6491' };
+const P = (t, dir, look) => ({ t, dir, look });
+
+const DIAGRAMS = [
+  {
+    kicker: 'Step 1 physiology', title: 'Think of circulation as plumbing',
+    aria: 'Circulation drawn as a loop: veins (preload) to right heart (CVP) to lungs (PCWP) to left heart (cardiac output) to arteries (SVR) to organs (perfusion) and back to the veins. MAP = CO × SVR; CO = HR × SV.',
+    cards: { rh: { pill: P('CVP') }, lu: { pill: P('PCWP') }, lh: { pill: P('CO') }, ve: { pill: P('Preload') }, ar: { pill: P('SVR') }, or: { pill: P('Perfusion') } },
+    seg: {}, extra: ['formulas']
+  },
+  {
+    kicker: 'Answer D', title: 'Cardiogenic shock',
+    aria: 'Cardiogenic shock: the left heart fails. Flow backs up from the left heart to the lungs (PCWP up), to the right heart (CVP up) and into the veins. Cardiac output and O2 delivery fall; SVR rises.',
+    cards: {
+      rh: { look: 'hi', pill: P('CVP', 'up', 'up') }, lu: { look: 'hi', pill: P('PCWP', 'up', 'up') },
+      lh: { look: 'fail', icon: 'broken', pill: P('CO', 'down', 'down') }, ve: { look: 'hi', pill: P('backed up', 'up', 'up') },
+      ar: { look: 'plain', pill: P('SVR', 'up', 'dark') }, or: { look: 'lo', pill: P('O₂ delivery', 'down', 'down') }
+    },
+    seg: { ll: 'back', rl: 'back', vr: 'back', la: 'low narrow', ao: 'low narrow', ov: 'low' }
+  },
+  {
+    kicker: 'Choice A', title: 'Hypovolemic shock',
+    aria: 'Hypovolemic shock: blood is lost, so the tank is empty. Preload, CVP, PCWP, cardiac output and O2 delivery all fall; SVR rises.',
+    cards: {
+      ve: { look: 'fail', pill: P('Preload', 'down', 'down') }, rh: { look: 'lo', pill: P('CVP', 'down', 'down') },
+      lu: { look: 'lo', pill: P('PCWP', 'down', 'down') }, lh: { look: 'lo', pill: P('CO', 'down', 'down') },
+      ar: { look: 'plain', pill: P('SVR', 'up', 'dark') }, or: { look: 'lo', pill: P('O₂ delivery', 'down', 'down') }
+    },
+    seg: { vr: 'low', rl: 'low', ll: 'low', la: 'low narrow', ao: 'low narrow', ov: 'low' }, extra: ['bleed']
+  },
+  {
+    kicker: 'Choice B', title: 'Neurogenic shock',
+    aria: 'Neurogenic shock: loss of sympathetic tone dilates the arteries and veins and slows the heart. Preload, CVP, PCWP, cardiac output, heart rate and SVR all fall.',
+    cards: {
+      ar: { look: 'fail', pill: P('SVR', 'down', 'down') }, ve: { look: 'lo', pill: P('Preload', 'down', 'down') },
+      rh: { look: 'lo', pill: P('CVP', 'down', 'down') }, lu: { look: 'lo', pill: P('PCWP', 'down', 'down') },
+      lh: { look: 'lo', pill: P('CO · HR', 'down', 'down') }, or: { look: 'lo', pill: P('O₂ delivery', 'down', 'down') }
+    },
+    seg: { la: 'low wide', ao: 'low wide', ov: 'low wide', vr: 'low wide', rl: 'low', ll: 'low' }, extra: ['neuro']
+  },
+  {
+    kicker: 'Choice C', title: 'Obstructive shock',
+    aria: 'Obstructive shock: flow is blocked between the right heart and the lungs. Blood backs up into the right heart (CVP up) and veins; the lungs and left heart are underfilled (PCWP and cardiac output down); SVR rises.',
+    cards: {
+      rh: { look: 'hi', pill: P('CVP', 'up', 'up') }, ve: { look: 'hi', pill: P('backed up', 'up', 'up') },
+      lu: { look: 'lo', pill: P('PCWP', 'down', 'down') }, lh: { look: 'lo', pill: P('CO', 'down', 'down') },
+      ar: { look: 'plain', pill: P('SVR', 'up', 'dark') }, or: { look: 'lo', pill: P('O₂ delivery', 'down', 'down') }
+    },
+    seg: { rl: 'block', vr: 'back', ll: 'low', la: 'low narrow', ao: 'low narrow', ov: 'low' }, extra: ['block']
+  },
+  {
+    kicker: 'Choice E', title: 'Septic shock',
+    aria: 'Septic shock: infection dilates the arteries and makes capillaries leak. SVR falls, preload, CVP and PCWP fall, and the heart pumps harder so cardiac output rises.',
+    cards: {
+      ar: { look: 'fail', pill: P('SVR', 'down', 'down') }, ve: { look: 'lo', pill: P('Preload', 'down', 'down') },
+      rh: { look: 'lo', pill: P('CVP', 'down', 'down') }, lu: { look: 'lo', pill: P('PCWP', 'down', 'down') },
+      lh: { look: 'plain', pill: P('CO', 'up', 'dark') }, or: { look: 'lo', pill: P('Perfusion', 'down', 'down') }
+    },
+    seg: { la: 'fast wide', ao: 'fast wide', ov: 'low', vr: 'low', rl: 'low', ll: 'low' }, extra: ['sepsis']
+  }
+];
+
+function sv(tag, attrs, parent) {
+  const n = document.createElementNS(NS, tag);
+  for (const [k, v] of Object.entries(attrs || {})) n.setAttribute(k, v);
+  if (parent) parent.appendChild(n);
+  return n;
+}
+function svText(parent, x, y, txt, cls, fill, anchor) {
+  const t = sv('text', { x, y, class: cls, fill, 'text-anchor': anchor || 'middle' }, parent);
+  t.textContent = txt;
+  return t;
+}
+const mctx = document.createElement('canvas').getContext('2d');
+function pillTextWidth(t) {
+  mctx.font = '700 17px Lato, Calibri, "Segoe UI", Arial, sans-serif';
+  return mctx.measureText(t).width;
+}
+function arrowHead(g, x, y, ang, color, size) {
+  sv('polygon', { points: '-13,-12 13,0 -13,12', fill: color, transform: `translate(${x} ${y}) rotate(${ang}) scale(${size})` }, g);
+}
+function drawSeg(g, key, spec) {
+  const words = (spec || 'norm').split(' ');
+  const look = SEG_LOOK[words.find(w => SEG_LOOK[w]) || 'norm'];
+  const width = words.includes('wide') ? 30 : words.includes('narrow') ? 6 : 14;
+  sv('path', { d: SEGS[key].d, fill: 'none', stroke: look.stroke, 'stroke-width': width }, g);
+  if (!look.head) return;
+  SEGS[key].heads.forEach(([x, y, a]) => {
+    const ang = look.rev ? a + 180 : a;
+    if (look.double) {
+      const dx = Math.cos(ang * Math.PI / 180) * 12, dy = Math.sin(ang * Math.PI / 180) * 12;
+      arrowHead(g, x - dx, y - dy, ang, look.head, look.size);
+      arrowHead(g, x + dx, y + dy, ang, look.head, look.size);
+    } else {
+      arrowHead(g, x, y, ang, look.head, look.size);
+    }
+  });
+}
+function drawPill(g, cx, cy, p) {
+  const fill = PILL_LOOK[p.look || 'dark'];
+  const tw = pillTextWidth(p.t), aw = p.dir ? 18 : 0;
+  const w = Math.max(116, Math.round(tw + aw + 42)), h = 36;
+  sv('rect', { x: cx - w / 2, y: cy - h / 2, width: w, height: h, rx: 18, fill }, g);
+  const start = cx - (tw + aw) / 2;
+  if (p.dir) {
+    const ax = start + 6, up = p.dir === 'up';
+    sv('path', {
+      d: up ? `M${ax} ${cy + 7} V${cy - 7} M${ax - 5} ${cy - 2} L${ax} ${cy - 7} L${ax + 5} ${cy - 2}`
+            : `M${ax} ${cy - 7} V${cy + 7} M${ax - 5} ${cy + 2} L${ax} ${cy + 7} L${ax + 5} ${cy + 2}`,
+      fill: 'none', stroke: '#FFFFFF', 'stroke-width': 2.4, 'stroke-linecap': 'round', 'stroke-linejoin': 'round'
+    }, g);
+  }
+  svText(g, start + aw, cy + 6, p.t, 'pt', '#FFFFFF', 'start');
+}
+function drawCard(g, key, spec) {
+  const c = CARDS[key], look = CARD_LOOK[spec.look || 'norm'];
+  sv('rect', { x: c.x, y: c.y, width: CW, height: CH, rx: 12, fill: look.fill, stroke: look.stroke, 'stroke-width': 1.5, filter: 'url(#dshadow)' }, g);
+  const icon = spec.icon || c.icon, isz = icon === 'wrench' ? 56 : 42;
+  sv('use', { href: '#i-' + icon, x: c.x + CW / 2 - isz / 2, y: c.y + 33 - isz / 2, width: isz, height: isz, color: look.icon }, g);
+  svText(g, c.x + CW / 2, c.y + 80, c.t, 'ct', look.t);
+  svText(g, c.x + CW / 2, c.y + 104, c.s, 'cs', look.s);
+  if (spec.pill) drawPill(g, c.x + CW / 2, c.above ? c.y - 25 : c.y + CH + 25, spec.pill);
+}
+function drops(g, pts, color) {
+  pts.forEach(([x, y, s]) => sv('use', { href: '#i-tint', x: x - s / 2, y: y - s / 2, width: s, height: s, color }, g));
+}
+const EXTRAS = {
+  formulas(g) {
+    svText(g, 535, 290, 'MAP = CO × SVR', 'f1', '#1D2230');
+    svText(g, 535, 362, 'CO = HR × SV', 'f2', '#C8102E');
+    svText(g, 535, 410, 'pressure = flow × resistance', 'f3', '#5F6672');
+  },
+  bleed(g) {
+    drops(g, [[166, 608, 22], [194, 634, 16], [222, 612, 19]], '#C8102E');
+    svText(g, 248, 630, 'Blood loss', 'call', '#C8102E', 'start');
+  },
+  block(g) {
+    sv('rect', { x: 409, y: 41, width: 16, height: 72, rx: 6, fill: '#C8102E' }, g);
+    sv('path', { d: 'M417 116 V196', stroke: '#C8102E', 'stroke-width': 2, 'stroke-dasharray': '4 5', fill: 'none' }, g);
+    svText(g, 417, 222, 'Blockage', 'call', '#C8102E');
+    svText(g, 417, 246, '(PE, tension pneumothorax)', 'call2', '#5F6672');
+  },
+  neuro(g) {
+    svText(g, 826, 318, 'No sympathetic tone', 'call', '#C8102E', 'end');
+    svText(g, 826, 342, '(spinal cord injury)', 'call2', '#5F6672', 'end');
+  },
+  sepsis(g) {
+    drops(g, [[690, 608, 20], [716, 634, 15], [742, 612, 18]], '#4F7FB0');
+    svText(g, 766, 630, 'Leaky capillaries', 'call', '#2C6491', 'start');
+    svText(g, 826, 318, 'Infection: pipes dilate', 'call', '#C8102E', 'end');
+  }
+};
+function buildDiagram(cfg) {
+  const fig = document.createElement('figure');
+  fig.className = 'dgm';
+  const cap = document.createElement('figcaption');
+  cap.innerHTML = `<span class="kicker">${cfg.kicker}</span><span class="dtitle">${cfg.title}</span>`;
+  fig.appendChild(cap);
+  const svg = sv('svg', { viewBox: '0 0 1080 680', class: 'dgm-svg', role: 'img', 'aria-label': cfg.aria });
+  const segs = sv('g', {}, svg);
+  Object.keys(SEGS).forEach(k => drawSeg(segs, k, cfg.seg[k]));
+  const cards = sv('g', {}, svg);
+  Object.keys(CARDS).forEach(k => drawCard(cards, k, cfg.cards[k] || {}));
+  const extra = sv('g', {}, svg);
+  (cfg.extra || []).forEach(name => EXTRAS[name](extra));
+  fig.appendChild(svg);
+  return fig;
+}
+function buildDiagrams() {
+  const host = $('#diagrams');
+  host.innerHTML = '';
+  DIAGRAMS.forEach(cfg => host.appendChild(buildDiagram(cfg)));
+}
+buildDiagrams();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(buildDiagrams);
+
+/* ---------- tool modes: text highlighter, pen, eraser ---------- */
+let mode = 'text';
+function setMode(m) {
+  mode = m;
+  hlOn = m === 'text';
+  const inking = m === 'pen' || m === 'erase';
+  $('#hlBtn').setAttribute('aria-pressed', hlOn ? 'true' : 'false');
+  $('#penBtn').setAttribute('aria-pressed', inking ? 'true' : 'false');
+  $('#eraseBtn').setAttribute('aria-pressed', m === 'erase' ? 'true' : 'false');
+  document.querySelectorAll('.sw').forEach(b => b.setAttribute('aria-pressed', m === 'pen' && b.dataset.ink === penKey ? 'true' : 'false'));
+  document.body.classList.toggle('hl-on', hlOn);
+  document.body.classList.toggle('ink-on', inking);
+  document.body.classList.toggle('erasing', m === 'erase');
+  $('#inkbar').hidden = !inking;
+  $('#times').hidden = inking;
+}
+
+/* ---------- pen: draw anywhere on the page; ink scrolls with the content ---------- */
+const INK = {
+  red: { c: '#D7263D', w: 3.5, o: 1 },
+  blue: { c: '#1F6FD1', w: 3.5, o: 1 },
+  black: { c: '#111418', w: 3.5, o: 1 },
+  marker: { c: '#FFE14D', w: 22, o: 0.5 }
+};
+const ink = $('#ink');
+let penKey = 'red';
+let strokes = [];
+let history = [];
+let drawing = null;
+let rubbing = false;
+
+function inkPoint(e) {
+  const r = ink.getBoundingClientRect();
+  return [Math.round((e.clientX - r.left) * 10) / 10, Math.round((e.clientY - r.top) * 10) / 10];
+}
+function pathData(p) {
+  if (p.length === 1) return `M${p[0][0]} ${p[0][1]} l0.01 0`;
+  let d = `M${p[0][0]} ${p[0][1]}`;
+  for (let i = 1; i < p.length - 1; i++) {
+    const mx = (p[i][0] + p[i + 1][0]) / 2, my = (p[i][1] + p[i + 1][1]) / 2;
+    d += ` Q${p[i][0]} ${p[i][1]} ${mx} ${my}`;
+  }
+  const last = p[p.length - 1];
+  return d + ` L${last[0]} ${last[1]}`;
+}
+function eraseAt(pt) {
+  for (let i = strokes.length - 1; i >= 0; i--) {
+    const s = strokes[i], reach = 10 + s.w / 2;
+    if (s.pts.some(q => Math.hypot(q[0] - pt[0], q[1] - pt[1]) < reach)) {
+      s.el.remove();
+      strokes.splice(i, 1);
+      history.push({ t: 'del', s, i });
+    }
+  }
+}
+ink.addEventListener('pointerdown', e => {
+  if (mode !== 'pen' && mode !== 'erase') return;
+  e.preventDefault();
+  ink.setPointerCapture(e.pointerId);
+  if (mode === 'erase') { rubbing = true; eraseAt(inkPoint(e)); return; }
+  const st = INK[penKey];
+  const el = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  el.setAttribute('fill', 'none');
+  el.setAttribute('stroke', st.c);
+  el.setAttribute('stroke-width', st.w);
+  el.setAttribute('stroke-linecap', 'round');
+  el.setAttribute('stroke-linejoin', 'round');
+  if (st.o < 1) { el.setAttribute('stroke-opacity', st.o); el.style.mixBlendMode = 'multiply'; }
+  drawing = { el, pts: [inkPoint(e)], w: st.w };
+  el.setAttribute('d', pathData(drawing.pts));
+  ink.appendChild(el);
+});
+ink.addEventListener('pointermove', e => {
+  if (rubbing) { eraseAt(inkPoint(e)); return; }
+  if (!drawing) return;
+  const p = inkPoint(e), last = drawing.pts[drawing.pts.length - 1];
+  if (Math.hypot(p[0] - last[0], p[1] - last[1]) < 1.5) return;
+  drawing.pts.push(p);
+  drawing.el.setAttribute('d', pathData(drawing.pts));
+});
+function endStroke() {
+  rubbing = false;
+  if (!drawing) return;
+  strokes.push(drawing);
+  history.push({ t: 'add', s: drawing });
+  drawing = null;
+}
+ink.addEventListener('pointerup', endStroke);
+ink.addEventListener('pointercancel', endStroke);
+function undoInk() {
+  const h = history.pop();
+  if (!h) return;
+  if (h.t === 'add') { h.s.el.remove(); strokes = strokes.filter(s => s !== h.s); }
+  if (h.t === 'del') {
+    const next = strokes[h.i];
+    next ? ink.insertBefore(h.s.el, next.el) : ink.appendChild(h.s.el);
+    strokes.splice(h.i, 0, h.s);
+  }
+  if (h.t === 'clear') { h.list.forEach(s => ink.appendChild(s.el)); strokes = h.list; }
+}
+function clearInk() {
+  if (!strokes.length) return;
+  history.push({ t: 'clear', list: strokes.slice() });
+  strokes.forEach(s => s.el.remove());
+  strokes = [];
+}
+$('#penBtn').addEventListener('click', () => setMode(mode === 'pen' || mode === 'erase' ? 'text' : 'pen'));
+$('#hlBtn').addEventListener('click', () => setMode(mode === 'text' ? 'none' : 'text'));
+$('#eraseBtn').addEventListener('click', () => setMode(mode === 'erase' ? 'pen' : 'erase'));
+$('#undoBtn').addEventListener('click', undoInk);
+$('#inkClearBtn').addEventListener('click', clearInk);
+document.querySelectorAll('.sw').forEach(b => b.addEventListener('click', () => { penKey = b.dataset.ink; setMode('pen'); }));
+document.addEventListener('keydown', e => {
+  const t = e.target;
+  if (t && (t.closest('input, textarea, select') || t.isContentEditable)) return;
+  if ((e.ctrlKey || e.metaKey) && !e.shiftKey && (e.key === 'z' || e.key === 'Z') && (mode === 'pen' || mode === 'erase')) { e.preventDefault(); undoInk(); return; }
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  if (e.key === 'p' || e.key === 'P') { e.preventDefault(); setMode(mode === 'pen' ? 'text' : 'pen'); }
+  if ((e.key === 'e' || e.key === 'E') && (mode === 'pen' || mode === 'erase')) { e.preventDefault(); setMode(mode === 'erase' ? 'pen' : 'erase'); }
+  if (e.key === 'Escape' && (mode === 'pen' || mode === 'erase')) setMode('text');
+});
+setMode('text');
+
+renderItem();
+</script>
+</body>
+</html>
